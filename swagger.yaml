@@ -18,9 +18,9 @@ info:
 tags:
 - name: camera_compensazione
   description: consente di inviare fatture di acquisto e/o di vendita da compensare
-#   externalDocs:
-#     description: Find out more
-#     url: http://swagger.io
+  externalDocs:
+    description: Maggiori informazioni
+    url: https://github.com/cameracompensazione/cc_webservice
 # - name: store
 #   description: Access to Petstore orders
 # - name: user

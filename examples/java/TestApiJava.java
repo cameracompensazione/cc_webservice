@@ -18,6 +18,12 @@ import java.util.logging.Logger;
  */
 public class TestApiJava {
 
+    HttpURLConnection con;
+
+    public TestApiJava() throws MalformedURLException, IOException {
+        HttpURLConnection con = createConnection(new URL("https://webapp.cameracompensazione.it/webservices/"));
+    }
+
     public static void main(String[] args) {
         try {
             TestApiJava main = new TestApiJava();
@@ -34,13 +40,13 @@ public class TestApiJava {
                             fattura.residuo);
                 }
             }
+            main.con.disconnect();
         } catch (IOException ex) {
             Logger.getLogger(TestApiJava.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     void sendFattura(String jwt, String tipoFattura, String nomeFile, String cont_b64, double residuo) throws IOException {
-        HttpURLConnection con = createConnection(new URL("https://webapp.cameracompensazione.it/webservices/"));
         String jsonOp = "{"
                 + "\"op\": \"ins_dati\",\n"
                 + "\"jwt\": \"" + jwt + "\",\n"
@@ -99,7 +105,6 @@ public class TestApiJava {
             Gson gson = new Gson(); // Creates new instance of Gson
             JsonElement element = gson.fromJson(response.toString(), JsonElement.class); //Converts the json string to JsonElement without POJO 
             JsonObject jsonObj = element.getAsJsonObject(); //Converting JsonElement to JsonObject
-            con.disconnect();
             return jsonObj;
         }
     }

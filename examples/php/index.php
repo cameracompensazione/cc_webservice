@@ -37,7 +37,7 @@ EOD;
     $errore = $risposta->message;
     echo "$nomeFile: ";
     if ($esito == "ok") {
-        echo "correttamente inviato<br>n";
+        echo "correttamente inviato<br>\n";
     } else {
         echo $errore . "<br>\n";
     }

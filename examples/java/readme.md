@@ -1,0 +1,1 @@
+questo progetto usa gson (https://github.com/google/gson)

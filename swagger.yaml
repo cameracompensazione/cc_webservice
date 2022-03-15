@@ -7,7 +7,7 @@ info:
     <h2>English description</h2>
     These are the API to interface to <a href="https://www.cameracompensazione.it">Camera di Compensazione</a>, in English <i>Clearing House</i>, a platform that balances the credits that you still have to collect with the invoices you have not paid, without bank costs.
      For more information, visit the website https://www.cameracompensazione.it (only Italian at the moment).
-  version: 1.0.0
+  version: 2.0.0
   title: Camera di Compensazione
   termsOfService: https://webapp.cameracompensazione.it/termini-condizioni.html
   contact:
@@ -21,6 +21,15 @@ tags:
   externalDocs:
     description: Maggiori informazioni
     url: https://github.com/cameracompensazione/cc_webservice
+# - name: store
+#   description: Access to Petstore orders
+# - name: user
+#   description: Operations about user
+#   externalDocs:
+#     description: Find out more about our store
+#     url: http://swagger.io
+# schemes:
+# - http
 paths:
   /connect:
     post:
@@ -50,11 +59,11 @@ paths:
           description: unauthorized
         503:
           description: busy
-  /send_fattura:
+  /send:
     post:
       tags:
-      - invia_fattura
-      summary: invia una fattura al webservice di Camera di Compensazione. Necessita di un token JWT valido ottenuto con la connessione precedente
+      - invia
+      summary: invia una fattura al webservice di Camera di Compensazione. Necessita di un token JWT validoottenuto con la connessione precedente
       operationId: ins_dati
       consumes:
       - application/json
@@ -78,7 +87,7 @@ paths:
           description: unauthorized
         503:
           description: busy
-  /send_manuali:
+  /send_manual:
     post:
       tags:
       - invia_dati_manuali
@@ -135,9 +144,6 @@ definitions:
   DatiInsDati:
     type: object
     properties:
-#      codProvenienza:
-#        type: string
-#        default: null
       tipo_fattura:
         type: string
         description: fattura di acquisto (a) o di vendita (v)))
@@ -162,9 +168,6 @@ definitions:
   DatiInsDatiManuali:
     type: object
     properties:
-#      codProvenienza:
-#        type: string
-#        default: null
       tipo_fattura:
         type: string
         description: fattura di acquisto (a) o di vendita (v)))
@@ -196,12 +199,6 @@ definitions:
         type: number
         default: 0.00
         description: la cifra da compensare (l'importo della fattura meno gli acconti già versati). Mettendo zero, viene preso il totale della fattura. Il numero deve essere con il punto decimale
-
-        type: string
-        description: il contenuto del file xml codificato in base64
-        default: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPD94bWwtc3R5bGVzaGVldCB0eXBlPSJ0ZXh0L3hzbCIgaHJlZj0iZmF0dHVyYW9yZGluYXJpYV92MS4yLjEueHNsIj8+CjxwOkZhdHR1cmFFbGV0dHJvbmljYSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyIgeG1sbnM6cD0iaHR0cDovL2l2YXNlcnZpemkuYWdlbnppYWVudHJhdGUuZ292Lml0L2RvY3MveHNkL2ZhdHR1cmUvdjEuMiIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgdmVyc2lvbmU9IkZQUjEyIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly9pdmFzZXJ2aXppLmFnZW56aWFlbnRyYXRlLmdvdi5pdC9kb2NzL3hzZC9mYXR0dXJlL3YxLjIgZmF0dHVyYW9yZGluYXJpYV92MS4yLnhzZCAiPgogIDxGYXR0dXJhRWxldHRyb25pY2FIZWFkZXI+CiAgICA8RGF0aVRyYXNtaXNzaW9uZT4KICAgICAgPElkVHJhc21pdHRlbnRlPgogICAgICAgIDxJZFBhZXNlPklUPC9JZFBhZXNlPgogICAgICAgIDxJZENvZGljZT5HWkFHUEwwNUIwMUY2NDZDPC9JZENvZGljZT4KICAgICAgPC9JZFRyYXNtaXR0ZW50ZT4KICAgICAgPFByb2dyZXNzaXZvSW52aW8+MjIxMTAwMDAwNzwvUHJvZ3Jlc3Npdm9JbnZpbz4KICAgICAgPEZvcm1hdG9UcmFzbWlzc2lvbmU+RlBSMTI8L0Zvcm1hdG9UcmFzbWlzc2lvbmU+CiAgICAgIDxDb2RpY2VEZXN0aW5hdGFyaW8+MDAwMDAwMDwvQ29kaWNlRGVzdGluYXRhcmlvPgogICAgPC9EYXRpVHJhc21pc3Npb25lPgogICAgPENlZGVudGVQcmVzdGF0b3JlPgogICAgICA8RGF0aUFuYWdyYWZpY2k+CiAgICAgICAgPElkRmlzY2FsZUlWQT4KICAgICAgICAgIDxJZFBhZXNlPklUPC9JZFBhZXNlPgogICAgICAgICAgPElkQ29kaWNlPjAxMjM0NTY3ODk3PC9JZENvZGljZT4KICAgICAgICA8L0lkRmlzY2FsZUlWQT4KICAgICAgICA8Q29kaWNlRmlzY2FsZT5HWkFHUEwwNUIwMUY2NDZDPC9Db2RpY2VGaXNjYWxlPgogICAgICAgIDxBbmFncmFmaWNhPgogICAgICAgICAgPERlbm9taW5hemlvbmU+QVpJRU5EQSBESSBQUk9WQSBkaSBHQXppZTwvRGVub21pbmF6aW9uZT4KICAgICAgICA8L0FuYWdyYWZpY2E+CiAgICAgICAgPFJlZ2ltZUZpc2NhbGU+UkYwMTwvUmVnaW1lRmlzY2FsZT4KICAgICAgPC9EYXRpQW5hZ3JhZmljaT4KICAgICAgPFNlZGU+CiAgICAgICAgPEluZGlyaXp6bz5WaWEgVm9sdHVybm8sIDI8L0luZGlyaXp6bz4KICAgICAgICA8Q0FQPjY1MDE1PC9DQVA+CiAgICAgICAgPENvbXVuZT5NT05URVNJTFZBTk88L0NvbXVuZT4KICAgICAgICA8UHJvdmluY2lhPlBFPC9Qcm92aW5jaWE+CiAgICAgICAgPE5hemlvbmU+SVQ8L05hemlvbmU+CiAgICAgIDwvU2VkZT4KICAgIDwvQ2VkZW50ZVByZXN0YXRvcmU+CiAgICA8Q2Vzc2lvbmFyaW9Db21taXR0ZW50ZT4KICAgICAgPERhdGlBbmFncmFmaWNpPgogICAgICAgIDxJZEZpc2NhbGVJVkE+CiAgICAgICAgICA8SWRQYWVzZT5JVDwvSWRQYWVzZT4KICAgICAgICAgIDxJZENvZGljZT4wMTYyMDQzMDQwMzwvSWRDb2RpY2U+CiAgICAgICAgPC9JZEZpc2NhbGVJVkE+CiAgICAgICAgPENvZGljZUZpc2NhbGU+MDE2MjA0MzA0MDM8L0NvZGljZUZpc2NhbGU+CiAgICAgICAgPEFuYWdyYWZpY2E+CgkJCQk8RGVub21pbmF6aW9uZT5TdXBlciBiaXQgc3JsIDwvRGVub21pbmF6aW9uZT48L0FuYWdyYWZpY2E+CiAgICAgIDwvRGF0aUFuYWdyYWZpY2k+CiAgICAgIDxTZWRlPgogICAgICAgIDxJbmRpcml6em8+VmlhIFZvbHR1cm5vLCAyPC9JbmRpcml6em8+CiAgICAgICAgPENBUD42NTAxNTwvQ0FQPgogICAgICAgIDxDb211bmU+TW9udGVzaWx2YW5vPC9Db211bmU+CiAgICAgICAgPFByb3ZpbmNpYT5QRTwvUHJvdmluY2lhPgogICAgICAgIDxOYXppb25lPklUPC9OYXppb25lPgogICAgICA8L1NlZGU+CiAgICA8L0Nlc3Npb25hcmlvQ29tbWl0dGVudGU+CiAgPC9GYXR0dXJhRWxldHRyb25pY2FIZWFkZXI+CiAgPEZhdHR1cmFFbGV0dHJvbmljYUJvZHk+CiAgICA8RGF0aUdlbmVyYWxpPgogICAgICA8RGF0aUdlbmVyYWxpRG9jdW1lbnRvPgogICAgICAgIDxUaXBvRG9jdW1lbnRvPlREMDE8L1RpcG9Eb2N1bWVudG8+CiAgICAgICAgPERpdmlzYT5FVVI8L0RpdmlzYT4KICAgICAgICA8RGF0YT4yMDIyLTAxLTI2PC9EYXRhPgogICAgICAgIDxOdW1lcm8+Ny8xPC9OdW1lcm8+CiAgICAgICAgPEltcG9ydG9Ub3RhbGVEb2N1bWVudG8+NTUwMDExLjEwPC9JbXBvcnRvVG90YWxlRG9jdW1lbnRvPgogICAgICA8L0RhdGlHZW5lcmFsaURvY3VtZW50bz4KICAgIDwvRGF0aUdlbmVyYWxpPgogICAgPERhdGlCZW5pU2Vydml6aT4KCQk8RGV0dGFnbGlvTGluZWU+PE51bWVyb0xpbmVhPjE8L051bWVyb0xpbmVhPjxDb2RpY2VBcnRpY29sbz48Q29kaWNlVGlwbz5CRU5FX0NBVF8xPC9Db2RpY2VUaXBvPjxDb2RpY2VWYWxvcmU+SDEwMDA8L0NvZGljZVZhbG9yZT48L0NvZGljZUFydGljb2xvPjxEZXNjcml6aW9uZT5NaWVsZSBtaWxsZSBmaW9yaSAxIGtnPC9EZXNjcml6aW9uZT48UXVhbnRpdGE+MTAwMDAwLjAwMDwvUXVhbnRpdGE+PFVuaXRhTWlzdXJhPnB6PC9Vbml0YU1pc3VyYT48UHJlenpvVW5pdGFyaW8+NS4wMDA8L1ByZXp6b1VuaXRhcmlvPjxQcmV6em9Ub3RhbGU+NTAwMDAwLjAwPC9QcmV6em9Ub3RhbGU+PEFsaXF1b3RhSVZBPjEwLjAwPC9BbGlxdW90YUlWQT48L0RldHRhZ2xpb0xpbmVlPjxEZXR0YWdsaW9MaW5lZT48TnVtZXJvTGluZWE+MjwvTnVtZXJvTGluZWE+PFRpcG9DZXNzaW9uZVByZXN0YXppb25lPkFDPC9UaXBvQ2Vzc2lvbmVQcmVzdGF6aW9uZT48RGVzY3JpemlvbmU+U1BFU0UgSU5DQVNTTzwvRGVzY3JpemlvbmU+PFF1YW50aXRhPjIuMDA8L1F1YW50aXRhPjxVbml0YU1pc3VyYT5OLjwvVW5pdGFNaXN1cmE+PFByZXp6b1VuaXRhcmlvPjQuNTU8L1ByZXp6b1VuaXRhcmlvPjxQcmV6em9Ub3RhbGU+OS4xMDwvUHJlenpvVG90YWxlPjxBbGlxdW90YUlWQT4yMi4wMDwvQWxpcXVvdGFJVkE+PC9EZXR0YWdsaW9MaW5lZT48RGF0aVJpZXBpbG9nbz48QWxpcXVvdGFJVkE+MTAuMDA8L0FsaXF1b3RhSVZBPjxJbXBvbmliaWxlSW1wb3J0bz41MDAwMDAuMDA8L0ltcG9uaWJpbGVJbXBvcnRvPjxJbXBvc3RhPjUwMDAwLjAwPC9JbXBvc3RhPjxFc2lnaWJpbGl0YUlWQT5JPC9Fc2lnaWJpbGl0YUlWQT48UmlmZXJpbWVudG9Ob3JtYXRpdm8+SVZBIGFsIDEwJTwvUmlmZXJpbWVudG9Ob3JtYXRpdm8+PC9EYXRpUmllcGlsb2dvPjxEYXRpUmllcGlsb2dvPjxBbGlxdW90YUlWQT4yMi4wMDwvQWxpcXVvdGFJVkE+PFNwZXNlQWNjZXNzb3JpZT45LjEwPC9TcGVzZUFjY2Vzc29yaWU+PEltcG9uaWJpbGVJbXBvcnRvPjkuMTA8L0ltcG9uaWJpbGVJbXBvcnRvPjxJbXBvc3RhPjIuMDA8L0ltcG9zdGE+PEVzaWdpYmlsaXRhSVZBPkk8L0VzaWdpYmlsaXRhSVZBPjxSaWZlcmltZW50b05vcm1hdGl2bz5JVkEgYWwgMjIlPC9SaWZlcmltZW50b05vcm1hdGl2bz48L0RhdGlSaWVwaWxvZ28+PC9EYXRpQmVuaVNlcnZpemk+CiAgICA8RGF0aVBhZ2FtZW50bz4KICAgICAgPENvbmRpemlvbmlQYWdhbWVudG8+VFAwMTwvQ29uZGl6aW9uaVBhZ2FtZW50bz4KICAgICAgPERldHRhZ2xpb1BhZ2FtZW50bz4KICAgICAgICA8QmVuZWZpY2lhcmlvPkFaSUVOREEgREkgUFJPVkEgZGkgR0F6aWU8L0JlbmVmaWNpYXJpbz4KICAgICAgICA8TW9kYWxpdGFQYWdhbWVudG8+TVAxMjwvTW9kYWxpdGFQYWdhbWVudG8+CiAgICAgICAgPERhdGFTY2FkZW56YVBhZ2FtZW50bz4yMDIyLTAyLTI4PC9EYXRhU2NhZGVuemFQYWdhbWVudG8+CiAgICAgICAgPEltcG9ydG9QYWdhbWVudG8+Mjc1MDA1LjU1PC9JbXBvcnRvUGFnYW1lbnRvPgogICAgICAgIDxBQkk+MDAwMDA8L0FCST4KICAgICAgICA8Q0FCPjAwMDAwPC9DQUI+CiAgICAgIDwvRGV0dGFnbGlvUGFnYW1lbnRvPgogICAgICA8RGV0dGFnbGlvUGFnYW1lbnRvPgogICAgICAgIDxCZW5lZmljaWFyaW8+QVpJRU5EQSBESSBQUk9WQSBkaSBHQXppZTwvQmVuZWZpY2lhcmlvPgogICAgICAgIDxNb2RhbGl0YVBhZ2FtZW50bz5NUDEyPC9Nb2RhbGl0YVBhZ2FtZW50bz4KICAgICAgICA8RGF0YVNjYWRlbnphUGFnYW1lbnRvPjIwMjItMDMtMzE8L0RhdGFTY2FkZW56YVBhZ2FtZW50bz4KICAgICAgICA8SW1wb3J0b1BhZ2FtZW50bz4yNzUwMDUuNTU8L0ltcG9ydG9QYWdhbWVudG8+CiAgICAgICAgPEFCST4wMDAwMDwvQUJJPgogICAgICAgIDxDQUI+MDAwMDA8L0NBQj4KICAgICAgPC9EZXR0YWdsaW9QYWdhbWVudG8+CiAgICA8L0RhdGlQYWdhbWVudG8+CiAgPC9GYXR0dXJhRWxldHRyb25pY2FCb2R5Pgo8L3A6RmF0dHVyYUVsZXR0cm9uaWNhPgo=
-    xml:
-      name: DatiGjwt
   InsDati:
     type: object
     required:
@@ -220,6 +217,25 @@ definitions:
         $ref: '#/definitions/DatiInsDati'
     xml:
       name: Gjwt
+  InsDatiManuali:
+    type: object
+    required:
+    - op
+    - jwt
+    - dati
+    properties:
+      op:
+        type: string
+        default: ins_dati
+        description: non modificare
+      jwt:
+        type: string
+        default: sostituire con token JWT ottenuto dalla connessione
+      dati:
+        $ref: '#/definitions/DatiInsDatiManuali'
+    xml:
+      name: Gjwt
+
 
 externalDocs:
   description: Find out more about Swagger

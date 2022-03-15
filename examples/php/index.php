@@ -7,11 +7,55 @@ $ch = creaCurl('https://webapp.cameracompensazione.it/webservices/');
 $jwt = getJwt($ch);
 if ($jwt != null) {
     require "dati.php"; // contiene i dati di prova
+    echo "<h1>Inserimento Fatture Elettroniche</h1>";
     foreach ($elencoFatture as $fattura) {
         sendFattura($ch, $jwt, $fattura["tipo_fattura"], $fattura["nome_file"], base64_encode($fattura["contenuto"]), $fattura["residuo"]);
     }
+    echo "<h1>Inserimento Dati Manuali</h1>";
+    foreach ($elencoDatiManuali as $datiManuali) {
+        sendDatiManuali($ch,
+                $jwt,
+                $datiManuali["tipo_fattura"],
+                $datiManuali["partita_iva_creditore"],
+                $datiManuali["partita_iva_debitore"],
+                $datiManuali["data_fattura"],
+                $datiManuali["numero_fattura"],
+                $datiManuali["importo_totale"],
+                $datiManuali["importo_residuo"]);
+    }
 }
 curl_close($ch);
+
+function sendDatiManuali($ch, $jwt, $tipoFattura, $partitaIvaCreditore, $partitaIvaDebitore, $dataFattura, $numeroFattura, $importoTotale, $importoResiduo) {
+    $jsonOp = <<<EOD
+        {
+            "op": "ins_manuale",
+            "jwt": "$jwt",
+            "dati":{
+                "codProvenienza":null,
+                "tipo_fattura":"$tipoFattura",
+                "partita_iva_creditore":"$partitaIvaCreditore",
+                "partita_iva_debitore":"$partitaIvaDebitore",
+                "data_fattura":"$dataFattura",
+                "numero_fattura":"$numeroFattura",
+                "importo_totale":"$importoTotale",
+                "importo_residuo":"$importoResiduo"
+            }
+        }
+EOD;
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonOp);
+    $response = curl_exec($ch);
+    $risposta = json_decode($response);
+
+    $esito = $risposta->result;
+    $errore = $risposta->message;
+    echo "fattura $numeroFattura: ";
+    if ($esito == "ok") {
+        echo "correttamente inviato<br>\n";
+    } else {
+        echo $errore . "<br>\n";
+    }
+}
 
 function sendFattura($ch, $jwt, $tipoFattura, $nomeFile, $cont_b64, $residuo) {
     $jsonOp = <<<EOD
@@ -27,11 +71,9 @@ function sendFattura($ch, $jwt, $tipoFattura, $nomeFile, $cont_b64, $residuo) {
             }
         }
 EOD;
-//                echo($jsonOp);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonOp);
     $response = curl_exec($ch);
     $risposta = json_decode($response);
-//                var_dump($risposta);
 
     $esito = $risposta->result;
     $errore = $risposta->message;

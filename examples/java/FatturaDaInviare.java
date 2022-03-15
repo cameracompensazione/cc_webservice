@@ -1,33 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author User
- */
-public class Dati {
+public class FatturaDaInviare {
 
     String tipoFattura, nomeFile, contenuto;
     double residuo;
 
-    public Dati(String tipoFattura, String nomeFile, String contenuto, double residuo) {
+    public FatturaDaInviare(String tipoFattura, String nomeFile, String contenuto, double residuo) {
         this.tipoFattura = tipoFattura;
         this.nomeFile = nomeFile;
         this.contenuto = contenuto;
         this.residuo = residuo;
     }
 
-    public static Dati[] creaEsempio() {
-        Dati[] retVal = {
-            new Dati(
+    public static FatturaDaInviare[] getElencoFattureEsempio() {
+        FatturaDaInviare[] retVal = {
+            new FatturaDaInviare(
             "a",
             "ITGZAGPL05B01F646C_79HL0.xml",
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?><p:FatturaElettronica xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:p=\"http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" versione=\"FPR12\" xsi:schemaLocation=\"http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2 fatturaordinaria_v1.2.xsd \"><FatturaElettronicaHeader><DatiTrasmissione><IdTrasmittente><IdPaese>IT</IdPaese><IdCodice>GZAGPL05B01F646C</IdCodice></IdTrasmittente><ProgressivoInvio>2211000007</ProgressivoInvio><FormatoTrasmissione>FPR12</FormatoTrasmissione><CodiceDestinatario>0000000</CodiceDestinatario></DatiTrasmissione><CedentePrestatore><DatiAnagrafici><IdFiscaleIVA><IdPaese>IT</IdPaese><IdCodice>01234567897</IdCodice></IdFiscaleIVA><CodiceFiscale>GZAGPL05B01F646C</CodiceFiscale><Anagrafica><Denominazione>AZIENDA DI PROVA di GAzie</Denominazione></Anagrafica><RegimeFiscale>RF01</RegimeFiscale></DatiAnagrafici><Sede><Indirizzo>Via Volturno, 2</Indirizzo><CAP>65015</CAP><Comune>MONTESILVANO</Comune><Provincia>PE</Provincia><Nazione>IT</Nazione></Sede></CedentePrestatore><CessionarioCommittente><DatiAnagrafici><IdFiscaleIVA><IdPaese>IT</IdPaese><IdCodice>01620430403</IdCodice></IdFiscaleIVA><CodiceFiscale>01620430403</CodiceFiscale><Anagrafica><Denominazione>Super bit srl </Denominazione></Anagrafica></DatiAnagrafici><Sede><Indirizzo>Via Volturno, 2</Indirizzo><CAP>65015</CAP><Comune>Montesilvano</Comune><Provincia>PE</Provincia><Nazione>IT</Nazione></Sede></CessionarioCommittente></FatturaElettronicaHeader><FatturaElettronicaBody><DatiGenerali><DatiGeneraliDocumento><TipoDocumento>TD01</TipoDocumento><Divisa>EUR</Divisa><Data>2022-01-26</Data><Numero>7/1</Numero><ImportoTotaleDocumento>550011.10</ImportoTotaleDocumento></DatiGeneraliDocumento></DatiGenerali><DatiBeniServizi><DettaglioLinee><NumeroLinea>1</NumeroLinea><CodiceArticolo><CodiceTipo>BENE_CAT_1</CodiceTipo><CodiceValore>H1000</CodiceValore></CodiceArticolo><Descrizione>Miele mille fiori 1 kg</Descrizione><Quantita>100000.000</Quantita><UnitaMisura>pz</UnitaMisura><PrezzoUnitario>5.000</PrezzoUnitario><PrezzoTotale>500000.00</PrezzoTotale><AliquotaIVA>10.00</AliquotaIVA></DettaglioLinee><DettaglioLinee><NumeroLinea>2</NumeroLinea><TipoCessionePrestazione>AC</TipoCessionePrestazione><Descrizione>SPESE INCASSO</Descrizione><Quantita>2.00</Quantita><UnitaMisura>N.</UnitaMisura><PrezzoUnitario>4.55</PrezzoUnitario><PrezzoTotale>9.10</PrezzoTotale><AliquotaIVA>22.00</AliquotaIVA></DettaglioLinee><DatiRiepilogo><AliquotaIVA>10.00</AliquotaIVA><ImponibileImporto>500000.00</ImponibileImporto><Imposta>50000.00</Imposta><EsigibilitaIVA>I</EsigibilitaIVA><RiferimentoNormativo>IVA al 10%</RiferimentoNormativo></DatiRiepilogo><DatiRiepilogo><AliquotaIVA>22.00</AliquotaIVA><SpeseAccessorie>9.10</SpeseAccessorie><ImponibileImporto>9.10</ImponibileImporto><Imposta>2.00</Imposta><EsigibilitaIVA>I</EsigibilitaIVA><RiferimentoNormativo>IVA al 22%</RiferimentoNormativo></DatiRiepilogo></DatiBeniServizi><DatiPagamento><CondizioniPagamento>TP01</CondizioniPagamento><DettaglioPagamento><Beneficiario>AZIENDA DI PROVA di GAzie</Beneficiario><ModalitaPagamento>MP12</ModalitaPagamento><DataScadenzaPagamento>2022-02-28</DataScadenzaPagamento><ImportoPagamento>275005.55</ImportoPagamento><ABI>00000</ABI><CAB>00000</CAB></DettaglioPagamento><DettaglioPagamento><Beneficiario>AZIENDA DI PROVA di GAzie</Beneficiario><ModalitaPagamento>MP12</ModalitaPagamento><DataScadenzaPagamento>2022-03-31</DataScadenzaPagamento><ImportoPagamento>275005.55</ImportoPagamento><ABI>00000</ABI><CAB>00000</CAB></DettaglioPagamento></DatiPagamento></FatturaElettronicaBody></p:FatturaElettronica>",
             100.61
             ),
-            new Dati(
+            new FatturaDaInviare(
             "v",
             "ITGZAGPL05B01F646C_77CFB.xml",
             """

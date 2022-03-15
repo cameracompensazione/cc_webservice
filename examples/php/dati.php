@@ -22,3 +22,24 @@ EOD,
         "residuo" => "231.76"
     ]
 ];
+
+$elencoDatiManuali = [
+    [
+        "tipo_fattura" => "a",
+        "partita_iva_creditore" => "01651210831",
+        "partita_iva_debitore" => "IT04507990150",
+        "data_fattura" => "2022-03-01",
+        "numero_fattura" => "32ddf",
+        "importo_totale" => "98765.43",
+        "importo_residuo" => "1234.56"
+    ],
+    [
+        "tipo_fattura" => "v",
+        "partita_iva_creditore" => "03671960833",
+        "partita_iva_debitore" => "IT04507990150",
+        "data_fattura" => "2022-01-01",
+        "numero_fattura" => "12/2022",
+        "importo_totale" => "1000.89",
+        "importo_residuo" => "500.12"
+    ],
+];

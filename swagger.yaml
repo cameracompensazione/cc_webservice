@@ -210,7 +210,7 @@ definitions:
     properties:
       op:
         type: string
-        default: ins_dati
+        default: ins_manuale
         description: non modificare
       jwt:
         type: string

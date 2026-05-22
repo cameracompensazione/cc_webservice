@@ -42,4 +42,5 @@ $elencoDatiManuali = [
         "importo_totale" => "1000.89",
         "importo_residuo" => "500.12"
     ],
+    {"op":"ins_manuale","jwt":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjYW1lcmFfY29tcGVuc2F6aW9uZSIsImF1ZCI6ImNhbWVyYV9jb21wZW5zYXppb25lX3dlYnNlcnZpY2UiLCJpYXQiOjE3NzE2NjYyMDcsIm5iZiI6MTc3MTY2NjIwNywiZXhwIjoxNzcxNjY2MzI3LCJkYXRhIjp7ImNvZF9hZmZpbGlhdG8iOiJDZEMiLCJ0ZXN0X2Vudmlyb25tZW50IjpmYWxzZX19.3vkm-enmn0InKI9sqWQutADTou7-8cNpojeP3HqSTWw","dati":{"codProvenienza":null,"tipo_fattura":"v","partita_iva_creditore":"01651210831","partita_iva_debitore":"03671960833","data_fattura":"21/02/2026","numero_fattura":"test01","importo_totale":"1000.0","importo_residuo":"900.0","email_proponente":"io@iol.it","cellulare_proponente":"3478973840"}}
 ];

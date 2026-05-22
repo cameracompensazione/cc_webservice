@@ -7,7 +7,7 @@ info:
     <h2>English description</h2>
     These are the API to interface to <a href="https://www.cameracompensazione.it">Camera di Compensazione</a>, in English <i>Clearing House</i>, a platform that balances the credits that you still have to collect with the invoices you have not paid, without bank costs.
      For more information, visit the website https://www.cameracompensazione.it (only Italian at the moment).
-  version: 2.0.0
+  version: 2.1.0
   title: Camera di Compensazione
   termsOfService: https://webapp.cameracompensazione.it/termini-condizioni.html
   contact:

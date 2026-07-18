@@ -7,7 +7,7 @@ info:
     <h2>English description</h2>
     These are the API to interface to <a href="https://www.cameracompensazione.it">Camera di Compensazione</a>, in English <i>Clearing House</i>, a platform that balances the credits that you still have to collect with the invoices you have not paid, without bank costs.
      For more information, visit the website https://www.cameracompensazione.it (only Italian at the moment).
-  version: 2.1.0
+  version: 2.2.0
   title: Camera di Compensazione
   termsOfService: https://webapp.cameracompensazione.it/termini-condizioni.html
   contact:
@@ -21,6 +21,8 @@ tags:
   externalDocs:
     description: Maggiori informazioni
     url: https://github.com/cameracompensazione/cc_webservice
+- name: compensazioni
+  description: consente alle integrazioni (es. skill Qonto) di consultare e accettare le compensazioni proposte dal motore di clearing, e di recuperare le lettere di cessione del credito
 # - name: store
 #   description: Access to Petstore orders
 # - name: user
@@ -113,6 +115,122 @@ paths:
           description: bad request
         401:
           description: unauthorized
+        503:
+          description: busy
+  /check:
+    post:
+      tags:
+      - connessione
+      summary: Verifica se un token JWT ottenuto con la connessione è ancora valido
+      operationId: cjwt
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: contiene il codice operazione e il token JWT da verificare
+        required: true
+        schema:
+          $ref: '#/definitions/Cjwt'
+      responses:
+        200:
+          description: ok
+        400:
+          description: bad request
+        401:
+          description: unauthorized (JWT non valido o scaduto)
+        503:
+          description: busy
+  /compensazioni:
+    post:
+      tags:
+      - compensazioni
+      summary: Restituisce le compensazioni proposte in attesa di accettazione per una partita IVA (canale integrazioni, es. skill Qonto)
+      operationId: get_compensazioni
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: contiene il codice operazione, il token JWT e la partita IVA di cui recuperare le compensazioni proposte
+        required: true
+        schema:
+          $ref: '#/definitions/GetCompensazioni'
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/CompensazioniResponse'
+        400:
+          description: bad request
+        401:
+          description: unauthorized
+        422:
+          description: unprocessable entity (partita_iva sconosciuta come partecipante, oppure operazione non disponibile in test environment)
+        503:
+          description: busy
+  /accetta_compensazione:
+    post:
+      tags:
+      - compensazioni
+      summary: Accetta una compensazione proposta tramite il token monouso, completando se necessario l'anagrafica del cedente
+      operationId: accetta_compensazione
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: contiene il codice operazione, il token JWT, il token monouso della compensazione e, se richiesto, l'anagrafica del cedente
+        required: true
+        schema:
+          $ref: '#/definitions/AccettaCompensazione'
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/AccettaCompensazioneResponse'
+        400:
+          description: bad request
+        401:
+          description: unauthorized
+        422:
+          description: unprocessable entity (token non trovato o già accettato, anagrafica incompleta, oppure operazione non disponibile in test environment)
+        503:
+          description: busy
+  /lettere_cessione:
+    post:
+      tags:
+      - compensazioni
+      summary: Restituisce le lettere di cessione del credito depositate per una partita IVA (canale integrazioni, es. skill Qonto)
+      operationId: get_lettere_cessione
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: contiene il codice operazione, il token JWT, la partita IVA e l'eventuale flag per richiedere anche le lettere già ritirate
+        required: true
+        schema:
+          $ref: '#/definitions/GetLettereCessione'
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/LettereCessioneResponse'
+        400:
+          description: bad request
+        401:
+          description: unauthorized
+        422:
+          description: unprocessable entity (partita_iva sconosciuta come partecipante, oppure operazione non disponibile in test environment)
         503:
           description: busy
 definitions:
@@ -261,6 +379,295 @@ definitions:
         $ref: '#/definitions/DatiInsDatiManuali'
     xml:
       name: InsDatiManuali
+  Cjwt:
+    type: object
+    required:
+    - op
+    - jwt
+    properties:
+      op:
+        type: string
+        default: cjwt
+        description: non modificare
+      jwt:
+        type: string
+        default: sostituire con token JWT ottenuto dalla connessione
+    xml:
+      name: Cjwt
+  DatiGetCompensazioni:
+    type: object
+    required:
+    - partita_iva
+    properties:
+      partita_iva:
+        type: string
+        description: la partita iva del partecipante (cedente) di cui recuperare le compensazioni proposte in attesa di accettazione
+        default: "01651210831"
+      lingua:
+        type: string
+        description: lingua dei messaggi restituiti (it|en)
+        enum:
+        - it
+        - en
+        default: it
+    xml:
+      name: DatiGetCompensazioni
+  GetCompensazioni:
+    type: object
+    required:
+    - op
+    - jwt
+    - dati
+    properties:
+      op:
+        type: string
+        default: get_compensazioni
+        description: non modificare
+      jwt:
+        type: string
+        default: sostituire con token JWT ottenuto dalla connessione
+      dati:
+        $ref: '#/definitions/DatiGetCompensazioni'
+    xml:
+      name: GetCompensazioni
+  Controparte:
+    type: object
+    properties:
+      partita_iva:
+        type: string
+      ragione_sociale:
+        type: string
+    xml:
+      name: Controparte
+  FatturaCompensata:
+    type: object
+    properties:
+      numero:
+        type: string
+      data:
+        type: string
+      importo_totale:
+        type: number
+      importo_residuo:
+        type: number
+    xml:
+      name: FatturaCompensata
+  ControparteConFatture:
+    type: object
+    properties:
+      partita_iva:
+        type: string
+      ragione_sociale:
+        type: string
+      fatture:
+        type: array
+        items:
+          $ref: '#/definitions/FatturaCompensata'
+    xml:
+      name: ControparteConFatture
+  Compensazione:
+    type: object
+    properties:
+      anagrafica_mancante:
+        type: array
+        description: campi obbligatori dell'anagrafica del cedente ancora mancanti, da passare in dati.anagrafica al momento dell'accettazione
+        items:
+          type: string
+      id_compensazione:
+        type: integer
+      id_ciclo:
+        type: integer
+      importo:
+        type: number
+      token:
+        type: string
+        description: token monouso da passare a /accetta_compensazione per accettare la proposta
+      credito_verso:
+        description: credito che il cedente cede, verso il proprio debitore
+        $ref: '#/definitions/ControparteConFatture'
+      debito_verso:
+        description: debito del cedente che viene compensato
+        $ref: '#/definitions/ControparteConFatture'
+      credito_ceduto_a:
+        $ref: '#/definitions/Controparte'
+      credito_ricevuto_da:
+        $ref: '#/definitions/Controparte'
+      base_legale:
+        type: string
+    xml:
+      name: Compensazione
+  CompensazioniResponse:
+    type: object
+    properties:
+      result:
+        type: string
+        default: ok
+      compensazioni:
+        type: array
+        items:
+          $ref: '#/definitions/Compensazione'
+    xml:
+      name: CompensazioniResponse
+  AnagraficaCompensazione:
+    type: object
+    description: campi anagrafici del cedente da completare/aggiornare al momento dell'accettazione (vedi anagrafica_mancante restituito da /compensazioni). pec e codice fiscale dell'azienda non sono modificabili.
+    properties:
+      ragione_sociale:
+        type: string
+      indirizzo:
+        type: string
+      cap:
+        type: string
+      comune:
+        type: string
+      provincia:
+        type: string
+      nazione:
+        type: string
+      email:
+        type: string
+      telefono:
+        type: string
+      nome_legale_rappresentante:
+        type: string
+      cognome_legale_rappresentante:
+        type: string
+      cf_legale_rappresentante:
+        type: string
+      qualita_legale_rappresentante:
+        type: string
+      luogo_nascita_legale_rappresentante:
+        type: string
+      data_nascita_legale_rappresentante:
+        type: string
+        description: formato AAAA-MM-GG
+      email_legale_rappresentante:
+        type: string
+    xml:
+      name: AnagraficaCompensazione
+  DatiAccettaCompensazione:
+    type: object
+    required:
+    - token
+    properties:
+      token:
+        type: string
+        description: token monouso della compensazione da accettare, ottenuto da /compensazioni
+      lingua:
+        type: string
+        description: lingua dei messaggi restituiti (it|en)
+        enum:
+        - it
+        - en
+        default: it
+      anagrafica:
+        description: da valorizzare solo se /compensazioni ha restituito anagrafica_mancante non vuoto
+        $ref: '#/definitions/AnagraficaCompensazione'
+    xml:
+      name: DatiAccettaCompensazione
+  AccettaCompensazione:
+    type: object
+    required:
+    - op
+    - jwt
+    - dati
+    properties:
+      op:
+        type: string
+        default: accetta_compensazione
+        description: non modificare
+      jwt:
+        type: string
+        default: sostituire con token JWT ottenuto dalla connessione
+      dati:
+        $ref: '#/definitions/DatiAccettaCompensazione'
+    xml:
+      name: AccettaCompensazione
+  AccettaCompensazioneResponse:
+    type: object
+    properties:
+      result:
+        type: string
+        default: ok
+      accepted:
+        type: boolean
+      id_compensazione:
+        type: integer
+      id_ciclo:
+        type: integer
+      ciclo_completo:
+        type: boolean
+        description: true se, con questa accettazione, tutti i partecipanti del ciclo hanno accettato
+    xml:
+      name: AccettaCompensazioneResponse
+  DatiGetLettereCessione:
+    type: object
+    required:
+    - partita_iva
+    properties:
+      partita_iva:
+        type: string
+        default: "01651210831"
+      lingua:
+        type: string
+        enum:
+        - it
+        - en
+        default: it
+      tutte:
+        type: boolean
+        description: se true restituisce anche le lettere già ritirate in precedenza, non solo quelle nuove
+        default: false
+    xml:
+      name: DatiGetLettereCessione
+  GetLettereCessione:
+    type: object
+    required:
+    - op
+    - jwt
+    - dati
+    properties:
+      op:
+        type: string
+        default: get_lettere_cessione
+        description: non modificare
+      jwt:
+        type: string
+        default: sostituire con token JWT ottenuto dalla connessione
+      dati:
+        $ref: '#/definitions/DatiGetLettereCessione'
+    xml:
+      name: GetLettereCessione
+  LetteraCessione:
+    type: object
+    properties:
+      id:
+        type: integer
+      id_compensazione:
+        type: integer
+      oggetto:
+        type: string
+      corpo_html:
+        type: string
+      creata:
+        type: string
+      consegnata:
+        type: string
+        description: data di ritiro, valorizzata da questa stessa chiamata se non era già stata ritirata in precedenza
+    xml:
+      name: LetteraCessione
+  LettereCessioneResponse:
+    type: object
+    properties:
+      result:
+        type: string
+        default: ok
+      lettere:
+        type: array
+        items:
+          $ref: '#/definitions/LetteraCessione'
+    xml:
+      name: LettereCessioneResponse
 
 
 externalDocs:

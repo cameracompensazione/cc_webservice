@@ -394,6 +394,24 @@ definitions:
         default: sostituire con token JWT ottenuto dalla connessione
     xml:
       name: Cjwt
+  DatiGjwt:
+    type: object
+    required:
+    - cod_affiliato
+    - token
+    properties:
+      cod_affiliato:
+        type: string
+        default: odoo
+      token:
+        type: string
+        default: FutyWHVO84xdS0ZQ5fDduOjfNdheSz27
+      partita_iva:
+        type: string
+        description: facoltativa; se fornita insieme a token_azienda, emette un JWT limitato alla sola Partita IVA
+      token_azienda:
+        type: string
+        description: token univoco dell'azienda ottenuto al primo inserimento fatture
   DatiGetCompensazioni:
     type: object
     required:
@@ -403,6 +421,9 @@ definitions:
         type: string
         description: la partita iva del partecipante (cedente) di cui recuperare le compensazioni proposte in attesa di accettazione
         default: "01651210831"
+      token_azienda:
+        type: string
+        description: token univoco dell'azienda ottenuto dal webservice all'invio delle fatture (obbligatorio se il JWT non è limitato alla P.IVA)
       lingua:
         type: string
         description: lingua dei messaggi restituiti (it|en)

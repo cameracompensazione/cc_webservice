@@ -234,17 +234,6 @@ paths:
         503:
           description: busy
 definitions:
-  DatiGjwt:
-    type: object
-    properties:
-      cod_affiliato:
-        type: string
-        default: test_environment
-      token:
-        type: string
-        default: sxFSCQJHVuilDVvWswGYLlirm2L6TZc1
-    xml:
-      name: DatiGjwt
   Gjwt:
     type: object
     required:

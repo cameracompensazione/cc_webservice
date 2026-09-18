@@ -186,7 +186,7 @@ paths:
       parameters:
       - in: body
         name: body
-        description: contiene il codice operazione, il token JWT, il token monouso della compensazione e, se richiesto, l'anagrafica del cedente
+        description: contiene il codice operazione, il token JWT, il token monouso della compensazione, le dichiarazioni obbligatorie del cedente e, se richiesto, l'anagrafica del cedente
         required: true
         schema:
           $ref: '#/definitions/AccettaCompensazione'
@@ -200,7 +200,7 @@ paths:
         401:
           description: unauthorized
         422:
-          description: unprocessable entity (token non trovato o già accettato, anagrafica incompleta, oppure operazione non disponibile in test environment)
+          description: unprocessable entity (token non trovato o già accettato, anagrafica incompleta, dichiarazioni del cedente mancanti o non confermate, oppure operazione non disponibile in test environment)
         503:
           description: busy
   /lettere_cessione:
@@ -570,10 +570,14 @@ definitions:
     type: object
     required:
     - token
+    - dichiarazioni
     properties:
       token:
         type: string
         description: token monouso della compensazione da accettare, ottenuto da /compensazioni
+      token_azienda:
+        type: string
+        description: token univoco dell'azienda ottenuto dal webservice all'invio delle fatture (obbligatorio se il JWT non è limitato alla P.IVA)
       lingua:
         type: string
         description: lingua dei messaggi restituiti (it|en)
@@ -584,8 +588,73 @@ definitions:
       anagrafica:
         description: da valorizzare solo se /compensazioni ha restituito anagrafica_mancante non vuoto
         $ref: '#/definitions/AnagraficaCompensazione'
+      dichiarazioni:
+        description: dichiarazioni e garanzie del cedente sul credito ceduto, obbligatorie come nel form pubblico. Vanno passate tutte con valore true; sono riprodotte nel testo dell'atto di cessione (art. 1266 c.c.).
+        $ref: '#/definitions/DichiarazioniCedente'
     xml:
       name: DatiAccettaCompensazione
+  DichiarazioniCedente:
+    type: object
+    description: conferme del cedente sul credito ceduto. Tutti i campi sono obbligatori e devono valere true, altrimenti l'accettazione è rifiutata con 422 (dichiarazioni mancanti o non confermate).
+    required:
+    - riconoscimento_credito
+    - riconoscimento_debito
+    - cessione_credito
+    - ricezione_credito
+    - dich_esistenza
+    - dich_titolarita
+    - dich_non_pagato
+    - dich_non_contestato
+    - dich_no_procedure
+    - dich_no_incedibilita
+    - dich_pro_soluto
+    properties:
+      riconoscimento_credito:
+        type: boolean
+        default: true
+        description: riconosce di vantare il credito verso il proprio debitore
+      riconoscimento_debito:
+        type: boolean
+        default: true
+        description: riconosce di avere il debito che viene compensato
+      cessione_credito:
+        type: boolean
+        default: true
+        description: accetta di cedere il credito al cessionario
+      ricezione_credito:
+        type: boolean
+        default: true
+        description: accetta lo scambio (il credito ricevuto in contropartita)
+      dich_esistenza:
+        type: boolean
+        default: true
+        description: il credito esiste, è certo, valido ed esigibile
+      dich_titolarita:
+        type: boolean
+        default: true
+        description: il credito è di titolarità esclusiva e non è vincolato a favore di terzi
+      dich_non_pagato:
+        type: boolean
+        default: true
+        description: il credito non è stato pagato, compensato o altrimenti estinto
+      dich_non_contestato:
+        type: boolean
+        default: true
+        description: il credito non è oggetto di contestazione o procedura
+      dich_no_procedure:
+        type: boolean
+        default: true
+        description: il cedente non è sottoposto a procedure concorsuali e non è insolvente
+      dich_no_incedibilita:
+        type: boolean
+        default: true
+        description: la cessione non viola divieti di cessione o vincoli contrattuali/di legge
+      dich_pro_soluto:
+        type: boolean
+        default: true
+        description: presa d'atto delle condizioni dell'operazione (cessione pro soluto)
+    xml:
+      name: DichiarazioniCedente
   AccettaCompensazione:
     type: object
     required:

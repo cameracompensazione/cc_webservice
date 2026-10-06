@@ -302,6 +302,14 @@ definitions:
         type: string
         description: la partita iva di chi ha ricevuto la fattura (può iniziare con il codice della nazione)
         default: "IT04507990150"
+      codice_fiscale_creditore:
+        type: string
+        description: "(opzionale) codice fiscale del creditore. Utile per i professionisti/persone fisiche: la loro PEC è indicizzata sul codice fiscale e non sulla partita iva, quindi fornirlo consente il recupero automatico della PEC"
+        default: null
+      codice_fiscale_debitore:
+        type: string
+        description: "(opzionale) codice fiscale del debitore. Utile per i professionisti/persone fisiche: la loro PEC è indicizzata sul codice fiscale e non sulla partita iva, quindi fornirlo consente il recupero automatico della PEC"
+        default: null
       data_fattura:
         type: string
         description: la data della fattura nel formato aaaa-mm-gg

@@ -233,7 +233,83 @@ paths:
           description: unprocessable entity (partita_iva sconosciuta come partecipante, oppure operazione non disponibile in test environment)
         503:
           description: busy
+  /richiedi_token_azienda:
+    post:
+      tags:
+      - azienda
+      summary: Genera/recupera il token_azienda di una partita IVA e lo invia alla PEC associata. Il token NON viene restituito nella risposta (va solo alla PEC)
+      operationId: richiedi_token_azienda
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: contiene il codice operazione, il token JWT e la partita IVA
+        required: true
+        schema:
+          $ref: '#/definitions/RichiediTokenAzienda'
+      responses:
+        200:
+          description: ok (token inviato alla PEC, oppure PEC assente con sent=false)
+          schema:
+            $ref: '#/definitions/RichiediTokenAziendaResponse'
+        400:
+          description: bad request (partita_iva mancante)
+        401:
+          description: unauthorized (JWT mancante o non valido)
+        422:
+          description: unprocessable entity (partita IVA non trovata)
+        503:
+          description: busy
 definitions:
+  RichiediTokenAzienda:
+    type: object
+    required:
+    - op
+    - jwt
+    - dati
+    properties:
+      op:
+        type: string
+        default: richiedi_token_azienda
+        description: non modificare
+      jwt:
+        type: string
+        description: token JWT ottenuto con la connessione
+      dati:
+        $ref: '#/definitions/DatiRichiediTokenAzienda'
+    xml:
+      name: RichiediTokenAzienda
+  DatiRichiediTokenAzienda:
+    type: object
+    required:
+    - partita_iva
+    properties:
+      partita_iva:
+        type: string
+        description: partita IVA dell'azienda a cui inviare il token_azienda via PEC
+        default: "IT03671960833"
+      lingua:
+        type: string
+        description: "(opzionale) lingua del messaggio (es. it, en); se assente viene dedotta dalla partita IVA"
+        default: it
+  RichiediTokenAziendaResponse:
+    type: object
+    properties:
+      result:
+        type: string
+        default: ok
+      sent:
+        type: boolean
+        description: true se il token e' stato inviato alla PEC; false se l'azienda non ha una PEC associata
+      destinatario_pec:
+        type: string
+        description: PEC (mascherata) a cui e' stato inviato il token; presente solo se sent=true
+      message:
+        type: string
+        description: motivo; presente quando sent=false
   Gjwt:
     type: object
     required:

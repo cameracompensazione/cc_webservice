@@ -87,6 +87,8 @@ paths:
           description: bad request
         401:
           description: unauthorized
+        422:
+          description: fattura rifiutata (es. PEC non trovata ed inviata la sola partita IVA senza codice fiscale, oppure dati non elaborabili)
         503:
           description: busy
   /send_manual:
@@ -115,6 +117,8 @@ paths:
           description: bad request
         401:
           description: unauthorized
+        422:
+          description: fattura rifiutata (es. PEC non trovata ed inviata la sola partita IVA senza codice fiscale, oppure dati non elaborabili)
         503:
           description: busy
   /check:
